@@ -1,23 +1,32 @@
 <script setup>
 import { useApplicationStore } from '../../stores/application'
 import { storeToRefs } from 'pinia';
+import { onMounted } from 'vue';
 import { ref } from 'vue'
+import { useDisplay } from 'vuetify'
 
 const applicationStore = useApplicationStore();
-const { appTitle } = storeToRefs(applicationStore)
+const { appTitle, sidebarVisible } = storeToRefs(applicationStore)
 const dialog = ref(false)
+const { name } = useDisplay()
 
 function search(params) {
-  // TODO hacer la búsqueda
+  // TODO mmr hacer la búsqueda
   dialog.value = false
 }
+
+onMounted(() => {
+  if (name.value == 'lg' || name.value == 'xl') {
+    sidebarVisible.value = true;
+  }
+})
 
 </script>
 
 <template>
   <v-app-bar elevation="1">
     <template v-slot:prepend>
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon @click="sidebarVisible = !sidebarVisible"></v-app-bar-nav-icon>
     </template>
     <v-app-bar-title>{{ appTitle }}</v-app-bar-title>
     <v-spacer class="d-none d-sm-flex"></v-spacer>
@@ -25,7 +34,7 @@ function search(params) {
         <v-col no-gutters>
           <div class="d-flex d-flex-row">
           <v-text-field density="compact" variant="outlined" label="Buscar" hide-details></v-text-field>
-          <v-btn icon>
+          <v-btn icon @click="search">
             <v-icon>mdi mdi-magnify</v-icon>
           </v-btn>
         </div>
